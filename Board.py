@@ -22,78 +22,91 @@ class Board:
         else:
             return False
 
-    def check_field(self,x,y):
+    def check_field_horizontal(self,x,y):
         if self.size <= 5:
             winning_fields=self.size
         else:
             winning_fields=5
-            """Horizontal addition"""
-            sum = 0
-            for field in range(0,winning_fields):
-                sum+=self.board[x][y+field]
-            if sum==winning_fields:
-                return 1
-            elif sum==-winning_fields:
-                return -1
+        """Horizontal addition"""
+        sum = 0
+        for field in range(0,winning_fields):
+            sum+=self.board[x][y+field]
+        if sum==winning_fields:
+            return 1
+        elif sum==-winning_fields:
+            return -1
 
-            """Vertical addition"""
-            sum = 0
-            for field in range(0, winning_fields):
-                sum += self.board[x+field][y]
-            if sum == winning_fields:
-                return 1
-            elif sum == -winning_fields:
-                return -1
+    def check_field_vertical(self, x, y):
+        if self.size <= 5:
+            winning_fields = self.size
+        else:
+            winning_fields = 5
+        """Vertical addition"""
+        sum = 0
+        for field in range(0, winning_fields):
+            sum += self.board[x+field][y]
+        if sum == winning_fields:
+            return 1
+        elif sum == -winning_fields:
+            return -1
 
-            """Cross right addition"""
-            sum = 0
-            for field in range(0, winning_fields):
-                sum += self.board[x + field][y+field]
-            if sum == winning_fields:
-                return 1
-            elif sum == -winning_fields:
-                return -1
+    def check_field_cross_right(self, x, y):
+        if self.size <= 5:
+            winning_fields = self.size
+        else:
+            winning_fields = 5
+        """Cross right addition"""
+        sum = 0
+        for field in range(0, winning_fields):
+            sum += self.board[x + field][y+field]
+        if sum == winning_fields:
+            return 1
+        elif sum == -winning_fields:
+            return -1
 
-            """Cross left addition"""
-            sum = 0
-            for field in range(0, winning_fields):
-                sum += self.board[x + field][y-field]
-            if sum == winning_fields:
-                return 1
-            elif sum == -winning_fields:
-                return -1
+    def check_field_cross_left(self, x, y):
+        if self.size <= 5:
+            winning_fields = self.size
+        else:
+            winning_fields = 5
+        """Cross left addition"""
+        sum = 0
+        for field in range(0, winning_fields):
+            sum += self.board[x + field][y-field]
+            if y < winning_fields-1:
+                raise IndexError
+        if sum == winning_fields:
+            return 1
+        elif sum == -winning_fields:
+            return -1
 
 
     def is_winner(self,Client,player0):
         end_of_game=0
         for x in range(0,self.size):
             for y in range(0,self.size):
-                try:
-                    end_of_game=self.check_field(x, y)
-                except IndexError:
-                    end_of_game=0
-                if end_of_game==1 and player0.sign==1:
-                    board=self.write_board(Client)
-                    Client.send(str.encode(board+'\nGame over.Computer won\n 1 Play again\n 2 Play other game\n 3 Exit'))
-                    d = Client.recv(1024)
-                    Client.decision = int(d.decode())
-                elif end_of_game==1 and player0.sign!=1:
-                    board = self.write_board(Client)
-                    Client.send(str.encode(board+'\nGame over.You won\n 1 Play again\n 2 Play other game\n 3 Exit'))
-                    d = Client.recv(1024)
-                    Client.decision = int(d.decode())
-                elif end_of_game==-1 and player0.sign==-1:
-                    board = self.write_board(Client)
-                    Client.send(str.encode(board+'\nGame over.Computer won\n 1 Play again\n 2 Play other game\n 3 Exit'))
-                    d = Client.recv(1024)
-                    Client.decision = int(d.decode())
-                elif end_of_game==-1 and player0.sign!=-1:
-                    board = self.write_board(Client)
-                    Client.send(str.encode(board+'\nGame over.You won\n 1 Play again\n 2 Play other game\n 3 Exit'))
-                    d = Client.recv(1024)
-                    Client.decision = int(d.decode())
+                for function in (self.check_field_horizontal, self.check_field_vertical, self.check_field_cross_right, self.check_field_cross_left):
+                    try:
+                        end_of_game=function(x, y)
+                    except IndexError:
+                        end_of_game=0
+                    if end_of_game==0:
+                        continue
+                    elif end_of_game==1 and player0.sign==1:
+                        board=self.write_board()
+                        Client.send(str.encode(board+'\nGame over.Computer won!\n\n Successfully disconnected\n'))
+                    elif end_of_game==1 and player0.sign!=1:
+                        board = self.write_board()
+                        Client.send(str.encode(board+'\nGame over.You won!\n\n Successfully disconnected\n'))
+                    elif end_of_game==-1 and player0.sign==-1:
+                        board = self.write_board()
+                        Client.send(str.encode(board+'\nGame over.Computer won!\n\n Successfully disconnected\n'))
+                    elif end_of_game==-1 and player0.sign!=-1:
+                        board = self.write_board()
+                        Client.send(str.encode(board+'\nGame over.You won!\n\n Successfully disconnected\n'))
 
-    def write_board(self,Client):
+
+    def write_board(self):
         global_string=""
         string="   "
         for i in range(0,self.size):

@@ -7,16 +7,23 @@ class EchoClient:
         self._create_socket()
         self._connect_to_server(address,port)
         self.send_message()
-        self.decision=1
 
     def send_message(self):
         while True:
             response = self.sock.recv(1024)
             print(response.decode())
-            message = str.encode(input())
-            if(message=="END"):
-                self.decision = 3
-            self.sock.send(message)
+            if "disconnected" in response.decode():
+                self.sock.close()
+                break
+            message = ""
+            if len(message)==0:
+                message = input()
+            if message=="END":
+                self.sock.close()
+                print('Successfully disconnected\n')
+                break
+            self.sock.send(str.encode(message))
+
 
     def _create_socket(self):
         self.sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)

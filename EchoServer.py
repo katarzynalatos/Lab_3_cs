@@ -15,17 +15,20 @@ class EchoServer:
         connection, client_address=self.sock.accept()
         new_game = Gomoku()
         new_game2 = MoreLess()
- #       new_game.Gomoku(connection)
-        connection.decision=PlayGame(connection)
-        if connection.decision == 1:
-            connection.decision = 0
-            new_game.Gomoku(connection)
-        elif connection.decision==2:
-            new_game2.MoreLess(connection)
-            connection.decision=0
-        elif connection.decision == 3:
-            connection.send(str.encode('Successfully disconnected'))
-            exit()
+        while True:
+            self.decision=PlayGame(connection)
+            if self.decision == 1:
+                #self.decision = 0
+                new_game.Gomoku(connection)
+                break
+            elif self.decision==2:
+                #self.decision = 0
+                new_game2.MoreLess(connection)
+                break
+            elif self.decision == 3:
+                connection.send(str.encode('Successfully disconnected'))
+                connection.close()
+                break
         while True:
             connection.send_message()
 

@@ -8,7 +8,7 @@ class GomokuStarter:
         self.sign=0
 
     def Start(self,Client):
-        Client.send(str.encode("G O M O K U\nWhat is your name?"))
+        Client.send(str.encode("\nG O M O K U\nWhat is your name?"))
         d = Client.recv(1024)
         self._name = d.decode()
         while len(self._name) == 0:

@@ -39,8 +39,6 @@ class EchoServer:
                 logging.shutdown()
                 connection.close()
                 break
-        while True:
-            connection.send_message()
 
     def _create_socket(self):
         self.sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)

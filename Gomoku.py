@@ -2,6 +2,7 @@ from GomokuStarter import GomokuStarter
 from Play import Play
 from Player import Player
 from Board import Board
+import logging
 
 class Gomoku:
     def __init__(self):
@@ -23,6 +24,7 @@ class Gomoku:
                 player_nr=self.player1.nr
             elif correct_step==True and player_nr==self.player1.nr:
                 player_nr=self.player0.nr
+            logging.info("Player no: "+str(player_nr)+" played.")
             correct_step=game.play(Client,player_nr,correct_step)
 
 

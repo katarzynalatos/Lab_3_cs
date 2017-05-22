@@ -1,4 +1,6 @@
 from random import randint
+import logging
+
 
 class Play:
     def __init__(self,board, player0, player1):
@@ -26,8 +28,10 @@ class Play:
             while position_x < 1 or position_x > self.board.size:
                 try:
                     Client.send(str.encode('Incorrect position number. Give row (X) position of your choice from [1,{}]'.format(self.board.size)))
+                    logging.info("Player typed incorrect position.")
                     d = Client.recv(1024)
                     position_x = int(d.decode())
+                    logging.info("Player typed position x.")
                 except ValueError:
                     position_x=0
             try:
@@ -40,8 +44,10 @@ class Play:
                 try:
                     Client.send(str.encode(
                         'Incorrect position number. Give column (Y) position of your choice from [1,{}]'.format(self.board.size)))
+                    logging.info("Player typed incorrect position.")
                     d = Client.recv(1024)
                     position_y = int(d.decode())
+                    logging.info("Player typed position y.")
                 except ValueError:
                     position_y=0
 

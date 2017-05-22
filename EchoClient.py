@@ -1,5 +1,5 @@
 import socket
-import sys
+
 
 class EchoClient:
     def __init__(self, address, port, data_size):
@@ -16,11 +16,11 @@ class EchoClient:
                 self.sock.close()
                 break
             message = ""
-            if len(message)==0:
+            while len(message)==0:
                 message = input()
             if message=="END":
-                self.sock.close()
                 print('Successfully disconnected\n')
+                self.sock.close()
                 break
             self.sock.send(str.encode(message))
 

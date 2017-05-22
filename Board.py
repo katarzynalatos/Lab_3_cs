@@ -1,8 +1,11 @@
+import logging
+
 
 class Board:
     def __init__(self, size=0):
         self.size = size
         self.board = []
+        logging.info("Board was made.")
         for i in range(0,self.size):
             self.board.append([])
             for j in range(0, self.size):
@@ -10,16 +13,20 @@ class Board:
 
     def is_empty(self, x, y):
         if self.board[x-1][y-1]==0:
+            logging.info("An empty position was chosen.")
             return True
         else:
+            logging.info("Not an empty position was chosen.")
             return False
 
     def set_position(self, x, y, sign, Client, player0):
         if self.board[x-1][y-1]==0:
             self.board[x-1][y-1]=sign
+            logging.info("Position [" + str(x) + "," + str(y) + "] was set successfully")
             self.is_winner(Client, player0)
             return True
         else:
+            logging.info("Position wasn't set successfully")
             return False
 
     def check_field_horizontal(self,x,y):
@@ -94,17 +101,24 @@ class Board:
                         continue
                     elif end_of_game==1 and player0.sign==1:
                         board=self.write_board()
-                        Client.send(str.encode(board+'\nGame over.Computer won!\n\n Successfully disconnected\n'))
+                        Client.send(str.encode(board+'\nGame over.Computer won!\n\nSuccessfully disconnected\n'))
+                        logging.info("Player no: " + str(player0.nr) + " won a game.\nPlayer successfully disconnected.")
+                        exit()
                     elif end_of_game==1 and player0.sign!=1:
                         board = self.write_board()
-                        Client.send(str.encode(board+'\nGame over.You won!\n\n Successfully disconnected\n'))
+                        Client.send(str.encode(board+'\nGame over.You won!\n\nSuccessfully disconnected\n'))
+                        logging.info("Player no: " + str(player0.nr) + " did not win a game.\nPlayer successfully disconnected.")
+                        exit()
                     elif end_of_game==-1 and player0.sign==-1:
                         board = self.write_board()
-                        Client.send(str.encode(board+'\nGame over.Computer won!\n\n Successfully disconnected\n'))
+                        Client.send(str.encode(board+'\nGame over.Computer won!\n\nSuccessfully disconnected\n'))
+                        logging.info("Player no: " + str(player0.nr) + " won a game.\nPlayer successfully disconnected.")
+                        exit()
                     elif end_of_game==-1 and player0.sign!=-1:
                         board = self.write_board()
-                        Client.send(str.encode(board+'\nGame over.You won!\n\n Successfully disconnected\n'))
-
+                        Client.send(str.encode(board+'\nGame over.You won!\n\nSuccessfully disconnected\n'))
+                        logging.info("Player no: " + str(player0.nr) + " did not win a game.\nPlayer successfully disconnected.")
+                        exit()
 
     def write_board(self):
         global_string=""
@@ -128,5 +142,6 @@ class Board:
                     string+="_"
                 string+='|'
             global_string+=string+"\n"
+        logging.info("Board was send")
         return global_string
 
